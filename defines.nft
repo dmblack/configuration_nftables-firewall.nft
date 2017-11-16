@@ -1,19 +1,21 @@
 # Server
-define nic_inet_wan = eth1
-define nic_inet_lan = eth2
+define nic_inet_lan = enp0s25
+define nic_inet_vpn = ppp0
+define nic_inet_wireless = wlo1
 
 # Common
 define nic_inet_lo = lo
 
 # Lan Interface
-define interface_lan = $nic_inet_lan
-define interface_wan = $nic_inet_wan
+#define interface_lan = { $nic_inet_lo, $nic_inet_vpn }
+define interface_lan = $nic_inet_lo
+define interface_wan = { $nic_inet_lan, $nic_inet_wireless }
 
-define trusted_interfaces = { lo, $nic_inet_lan }
+define trusted_interfaces = { lo, $interface_lan }
 define trusted_states_in = { established , new , related }
 define trusted_states_out = { established , new , related }
 
-define untrusted_interfaces = { $nic_inet_wan }
+define untrusted_interfaces = { $interface_wan }
 define untrusted_states_in = { established , related }
 define untrusted_states_out = { established , new , related }
 
