@@ -1,0 +1,26 @@
+# Server
+define nic_inet_wan = eth1
+define nic_inet_lan = eth2
+
+# Common
+define nic_inet_lo = lo
+
+# Lan Interface
+define interface_lan = $nic_inet_lan
+define interface_wan = $nic_inet_wan
+
+define trusted_interfaces = { lo, $nic_inet_lan }
+define trusted_states_in = { established , new , related }
+define trusted_states_out = { established , new , related }
+
+define untrusted_interfaces = { $nic_inet_wan }
+define untrusted_states_in = { established , related }
+define untrusted_states_out = { established , new , related }
+
+define global_state_block = { invalid }
+
+# Trusted States
+define state_untrusted_lan = { invalid , untracked }
+define state_untrusted_wan = { invalid , new , untracked }
+define state_trusted_lan = { established , new , related }
+define state_trusted_wan = { established , related }

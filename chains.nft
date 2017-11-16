@@ -1,0 +1,29 @@
+chain counter-icmp-output {
+  counter
+}
+
+chain counter-total {
+  counter
+}
+
+chain counter-total-exlo {
+  counter
+}
+
+chain counter-total-input {
+  counter comment "includes loopback"
+  iif != lo counter comment "excludes loopback"
+}
+
+chain counter-total-input-drop {
+  counter
+}
+
+chain counter-total-output {
+  counter comment "includes loopback"
+  oif != lo counter comment "excludes loopback"
+}
+
+chain counter-total-output-drop {
+  counter
+}

@@ -1,0 +1,28 @@
+chain input {
+  # Hook and default drop.
+  type filter hook input priority 0; policy drop;
+
+  # count our traffic.
+  jump counter-total
+  jump counter-total-input
+
+  # Block our global_state_block (invalid)
+  ct state $global_state_block counter drop;
+
+  # Accept our trusted interfaces.
+  iif lo counter accept;
+
+  # Counters excluding loopback
+  jump counter-total-exlo
+
+  # Accept our knowns.
+  iif $trusted_interfaces ct state $trusted_states_in counter accept
+  iif $untrusted_interfaces ct state $untrusted_states_in counter accept
+
+  # Allow WAN PING, but limited to 2 per second
+  iif $untrusted_interfaces ip protocol icmp icmp type echo-request limit rate 2/second counter accept
+
+  # count and fall back to default policy (drop)
+  jump counter-total-input-drop
+  counter queue num 0
+}

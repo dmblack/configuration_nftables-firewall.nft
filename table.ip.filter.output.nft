@@ -1,0 +1,25 @@
+chain output {
+  # Hook and default drop.
+  type filter hook output priority 0; policy drop;
+
+  # count our traffic.
+  jump counter-total
+  jump counter-total-output
+
+  # Block our global_state_block (invalid)
+  ct state $global_state_block counter drop;
+
+  # Accept our trusted interfaces.
+  oif lo counter accept;
+
+  # Counters excluding loopback
+  jump counter-total-exlo
+
+  # Accept our knowns.
+  oif $trusted_interfaces ct state $trusted_states_out counter accept
+  oif $untrusted_interfaces ct state $untrusted_states_out counter accept
+
+  # count and fall back to default policy (drop)
+  jump counter-total-output-drop
+  counter queue num 0
+}
