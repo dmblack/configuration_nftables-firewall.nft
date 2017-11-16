@@ -1,3 +1,8 @@
+#!/usr/sbin/nft -f
+
+# Ensure our ip filter table is empty
+flush table ip filter
+
 table ip filter {
   include "./configuration_nftables-firewall/chains.nft"
   include "./configuration_nftables-firewall/defines.nft"
