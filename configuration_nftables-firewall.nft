@@ -1,0 +1,7 @@
+table ip filter {
+  include "./configuration_nftables-firewall/chains.nft"
+  include "./configuration_nftables-firewall/defines.nft"
+
+  include "./configuration_nftables-firewall/table.ip.filter.input.nft"
+  include "./configuration_nftables-firewall/table.ip.filter.output.nft"
+}
