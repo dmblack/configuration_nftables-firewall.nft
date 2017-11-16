@@ -1,9 +1,9 @@
 #!/usr/sbin/nft -f
 
 table ip filter {
-  include "/etc/nftables.d/configuration_nftables-firewall/chains.nft"
-  include "/etc/nftables.d/configuration_nftables-firewall/defines.nft"
+  include "/etc/nftables.d/configuration_nftables-firewall.nft/chains.nft"
+  include "/etc/nftables.d/configuration_nftables-firewall.nft/defines.nft"
 
-  include "/etc/nftables.d/configuration_nftables-firewall/table.ip.filter.input.nft"
-  include "/etc/nftables.d/configuration_nftables-firewall/table.ip.filter.output.nft"
+  include "/etc/nftables.d/configuration_nftables-firewall.nft/table.ip.filter.input.nft"
+  include "/etc/nftables.d/configuration_nftables-firewall.nft/table.ip.filter.output.nft"
 }
