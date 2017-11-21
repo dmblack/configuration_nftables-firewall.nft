@@ -10,27 +10,25 @@ define dg_interfaces = { lo , enp0s25 , wlo1 }
 # - - - HTTP
 define dg_service_tcp_http = http
 define dg_service_tcp_https = https
-define dg_service_tcp_https-alt =  http-alt
-add element filter trusted_services_out { $dg_service_tcp_http . tcp : accept }
-add element filter trusted_services_out { $dg_service_tcp_https . tcp : accept }
-add element filter trusted_services_out { $dg_service_tcp_https . tcp : accept }
+add element filter trusted_services_tcp_out { $dg_service_tcp_http . tcp : accept }
+add element filter trusted_services_tcp_out { $dg_service_tcp_https . tcp : accept }
 
 # - - - IRC
 #define dg_service_tcp_irc = { 194 , 6697 }
-#add element filter map_services_in { $dg_interfaces . tcp . $dg_service_tcp_irc : drop }
-#add element filter map_services_out { $dg_interfaces . tcp . $dg_service_tcp_irc : drop }
+#add element filter map_services_tcp_in { $dg_interfaces . tcp . $dg_service_tcp_irc : drop }
+#add element filter map_services_tcp_out { $dg_interfaces . tcp . $dg_service_tcp_irc : drop }
 
 #define dg_service_tcp_teamviewer = 5938
-#add element filter map_services_in { $dg_interfaces . tcp . $dg_service_tcp_teamviewer : drop }
-#add element filter map_services_out { $dg_interfaces . tcp . $dg_service_tcp_teamviewer : drop }
+#add element filter map_services_tcp_in { $dg_interfaces . tcp . $dg_service_tcp_teamviewer : drop }
+#add element filter map_services_tcp_out { $dg_interfaces . tcp . $dg_service_tcp_teamviewer : drop }
 
 # - - UDP
 
 # - - - Domain / Name Server related services
 #define dg_service_udp_dns = 53
-#add element filter map_services_out { $dg_interfaces . udp . $dg_service_udp_dns : accept }
+#add element filter map_services_udp_out { $dg_interfaces . udp . $dg_service_udp_dns : accept }
 
 # - - - IRC
 #define dg_service_udp_irc = { 194 , 6697 }
-#add element filter map_services_in { $dg_interfaces . udp . $dg_service_udp_irc : drop }
-#add element filter map_services_out { $dg_interfaces . udp . $dg_service_udp_irc : drop }
+#add element filter map_services_udp_in { $dg_interfaces . udp . $dg_service_udp_irc : drop }
+#add element filter map_services_udp_out { $dg_interfaces . udp . $dg_service_udp_irc : drop }

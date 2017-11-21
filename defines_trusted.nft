@@ -25,4 +25,4 @@ define dt_interfaces = { lo }
 #     DMAC = 01:00:5E:00:00:FB (33:33:00:00:00:FB IPv6)
 # Additionally: Should only be accepted on TRUSTED interfaces & networks.
 define dt_trusted_service_mdns = 5353
-add element filter trusted_services_in { $dt_trusted_service_mdns . udp : accept }
+add element filter trusted_services_udp_in { $dt_trusted_service_mdns . udp : accept }
