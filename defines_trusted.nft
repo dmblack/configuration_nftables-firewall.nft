@@ -13,7 +13,8 @@ define dt_interfaces = { lo }
 # Services
 # - TCP
 
-# NONE TO DATE
+define dt_trusted_service_tcp_sspd = 1900
+add element filter trusted_services_tcp_in { $dt_trusted_service_tcp_sspd . tcp : accept }
 
 # - UDP
 # Separated from the above domain item due to it's multicast status
@@ -24,5 +25,8 @@ define dt_interfaces = { lo }
 #     PROTO = UDP
 #     DMAC = 01:00:5E:00:00:FB (33:33:00:00:00:FB IPv6)
 # Additionally: Should only be accepted on TRUSTED interfaces & networks.
-define dt_trusted_service_mdns = 5353
-add element filter trusted_services_udp_in { $dt_trusted_service_mdns . udp : accept }
+define dt_trusted_service_udp_mdns = 5353
+add element filter trusted_services_udp_in { $dt_trusted_service_udp_mdns . udp : accept }
+
+define dt_trusted_service_udp_sspd = 1900
+add element filter trusted_services_udp_in { $dt_trusted_service_udp_sspd . udp : accept }

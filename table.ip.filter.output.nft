@@ -15,6 +15,10 @@ chain output {
   # Counters excluding loopback
   jump counter-total-exlo
 
+  # Setup our global services
+  oif $global_interfaces tcp dport . ip protocol vmap @global_services_tcp_out
+  oif $global_interfaces udp dport . ip protocol vmap @global_services_udp_out
+
   # Setup our trusted services
   oif $trusted_interfaces tcp dport . ip protocol vmap @trusted_services_tcp_out
   oif $trusted_interfaces udp dport . ip protocol vmap @trusted_services_udp_out

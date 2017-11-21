@@ -15,6 +15,10 @@ chain input {
   # Counters excluding loopback
   jump counter-total-exlo
 
+  # Setup our global services
+  iif $global_interfaces tcp dport . ip protocol vmap @global_services_tcp_in
+  iif $global_interfaces udp dport . ip protocol vmap @global_services_udp_in
+
   # Setup our trusted services
   iif $trusted_interfaces tcp dport . ip protocol vmap @trusted_services_tcp_in
   iif $trusted_interfaces udp dport . ip protocol vmap @trusted_services_udp_in
@@ -22,6 +26,7 @@ chain input {
   # Setup our untrusted services
   iif $untrusted_interfaces tcp dport . ip protocol vmap @untrusted_services_tcp_in
   iif $untrusted_interfaces udp dport . ip protocol vmap @untrusted_services_udp_in
+
 
   # Setup our trusted states.
   iif $trusted_interfaces ct state $trusted_states_in counter accept

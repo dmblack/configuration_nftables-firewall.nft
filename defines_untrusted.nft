@@ -13,8 +13,21 @@ define du_interfaces = { lo }
 # Services
 # - TCP
 
-# NONE TO DATE
+define du_trusted_service_tcp_sspd = 1900
+add element filter untrusted_services_tcp_in { $du_trusted_service_tcp_sspd . tcp : drop }
 
 # - UDP
 
-# NONE TO DATE
+define du_trusted_service_udp_sspd = 1900
+add element filter untrusted_services_udp_in { $du_trusted_service_udp_sspd . udp : drop }
+
+# Separated from the above domain item due to it's multicast status
+#   SEE: https://en.wikipedia.org/wiki/Multicast_DNS
+#   Should only be accepted only
+#     DPORT = 5353
+#     DADDR = 224.0.0.251 (FF02:FB IPv6)
+#     PROTO = UDP
+#     DMAC = 01:00:5E:00:00:FB (33:33:00:00:00:FB IPv6)
+# Additionally: Should only be accepted on TRUSTED interfaces & networks.
+define du_untrusted_service_udp_mdns = 5353
+add element filter untrusted_services_udp_in { $du_untrusted_service_udp_mdns . udp : drop }

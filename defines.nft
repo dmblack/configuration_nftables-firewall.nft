@@ -7,9 +7,12 @@ define nic_inet_wireless = wlo1
 define nic_inet_lo = lo
 
 # Networks
-define trusted_interfaces = { $nic_inet_lo , $nic_inet_vpn }
 #define trusted_interfaces = $nic_inet_lo
+define trusted_interfaces = { $nic_inet_lo , $nic_inet_vpn }
+#define trusted_interfaces = { $nic_inet_lo , $nic_inet_wireless }
+#define untrusted_interfaces = { $nic_inet_lan }
 define untrusted_interfaces = { $nic_inet_lan, $nic_inet_wireless }
+define global_interfaces = { $trusted_interfaces , $untrusted_interfaces }
 
 # Dictionaries
 map trusted_services_tcp_in { type inet_service . inet_proto : verdict; }
@@ -20,6 +23,10 @@ map trusted_services_tcp_out { type inet_service . inet_proto : verdict; }
 map trusted_services_udp_out { type inet_service . inet_proto : verdict; }
 map untrusted_services_tcp_out { type inet_service . inet_proto : verdict; }
 map untrusted_services_udp_out { type inet_service . inet_proto : verdict; }
+map global_services_tcp_in { type inet_service . inet_proto : verdict; }
+map global_services_tcp_out { type inet_service . inet_proto : verdict; }
+map global_services_udp_in { type inet_service . inet_proto : verdict; }
+map global_services_udp_out { type inet_service . inet_proto : verdict; }
 
 # States
 # Note: invalid is part of global block, hence not mentioned here.
