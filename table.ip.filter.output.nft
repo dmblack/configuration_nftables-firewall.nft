@@ -7,19 +7,27 @@ chain output {
   jump counter-total-output
 
   # Block our global_state_block (invalid)
-  ct state $global_state_block counter drop;
+  ct state $global_state_block counter queue num 11
 
   # Accept our trusted interfaces.
-  oif lo counter accept;
+  oif lo counter accept
 
   # Counters excluding loopback
   jump counter-total-exlo
 
-  # Accept our knowns.
+  # Setup our trusted services
+  oif $trusted_interfaces tcp dport . ip protocol vmap @trusted_services_out
+  oif $trusted_interfaces udp dport . ip protocol vmap @trusted_services_out
+
+  # Setup our untrusted services
+  oif $untrusted_interfaces tcp dport . ip protocol vmap @untrusted_services_out
+  oif $untrusted_interfaces udp dport . ip protocol vmap @untrusted_services_out
+
+  # Setup our trusted states.
   oif $trusted_interfaces ct state $trusted_states_out counter accept
   oif $untrusted_interfaces ct state $untrusted_states_out counter accept
 
   # count and fall back to default policy (drop)
   jump counter-total-output-drop
-  counter queue num 0
+  counter queue num 10
 }

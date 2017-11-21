@@ -1,13 +1,20 @@
 # Prefixed with du_ to avoid collision with other defines.
 
 # Interfaces
-# Requires MANUAL input
-define du_interfaces = { enp0s25 , wl01 }
+# Requires MANUAL Input
+# I include my VPN here, as it's a secure network. However;
+#   NFTables doesn't seem to support dynamic interfaces. So if this interface is not available,
+#     the script will throw an error. If the interface was available, but is no longer available,
+#     it will be refered to by it's 'interface' number (an allocated integer, and no longer ppp0).
+#   So.. for now.. I manually toggle between these two defines when I'm on VPN or not - but default to no ppp0
+define du_interfaces = { lo }
+#define du_interfaces = { lo, ppp0 }
 
-# States
-# Note: invalid is part of global block, hence not mentioned here.
-define du_states_in = { established , related }
-#add element filter du_states_in { $du_interfaces . $du_states_in : accept }
+# Services
+# - TCP
 
-define du_states_out = { established , new , related }
-#add element filter du_states_out { $du_interfaces . $du_states_out : accept }
+# NONE TO DATE
+
+# - UDP
+
+# NONE TO DATE

@@ -7,17 +7,22 @@ define nic_inet_wireless = wlo1
 define nic_inet_lo = lo
 
 # Networks
-#define network_lan = { $nic_inet_lo, $nic_inet_vpn }
-define network_lan = $nic_inet_lo
-define network_wan = { $nic_inet_lan, $nic_inet_wireless }
+define trusted_interfaces = { $nic_inet_lo , $nic_inet_vpn }
+#define trusted_interfaces = $nic_inet_lo
+define untrusted_interfaces = { $nic_inet_lan, $nic_inet_wireless }
 
 # Dictionaries
-map map_services_in { type iface_index . inet_proto . inet_service : verdict; }
-map map_services_out { type iface_index . inet_proto . inet_service : verdict; }
-#map map_states_in { type iface_index . ct_state : verdict; }
-#map map_states_out { type iface_index . ct_state : verdict; }
+map trusted_services_in { type inet_service . inet_proto : verdict; }
+map untrusted_services_in { type inet_service . inet_proto : verdict; }
+map trusted_services_out { type inet_service . inet_proto : verdict; }
+map untrusted_services_out { type inet_service . inet_proto : verdict; }
 
-# As global applies to all interfaces, we intentionally do not include this in our map.
-#   At time of writing, 21'st November - This also doesn't need an in/out rule.
-map map_services_global { type iface_index . inet_proto . inet_service : verdict; }
-#map map_states_global { type ct_state: verdict; }
+# States
+# Note: invalid is part of global block, hence not mentioned here.
+define trusted_states_in = { established , new , related }
+define trusted_states_out = { established , new , related }
+
+define untrusted_states_in = { established , related }
+define untrusted_states_out = { established , new , related }
+
+define global_state_block = invalid

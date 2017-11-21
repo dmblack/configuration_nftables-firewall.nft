@@ -7,7 +7,7 @@ chain input {
   jump counter-total-input
 
   # Block our global_state_block (invalid)
-  ct state $global_state_block counter queue num 1
+  ct state $global_state_block counter queue num 21
 
   # Accept our trusted interfaces.
   iif lo counter accept
@@ -15,7 +15,15 @@ chain input {
   # Counters excluding loopback
   jump counter-total-exlo
 
-  # Accept our knowns.
+  # Setup our trusted services
+  iif $trusted_interfaces tcp dport . ip protocol vmap @trusted_services_in
+  iif $trusted_interfaces udp dport . ip protocol vmap @trusted_services_in
+
+  # Setup our untrusted services
+  iif $untrusted_interfaces tcp dport . ip protocol vmap @untrusted_services_in
+  iif $untrusted_interfaces udp dport . ip protocol vmap @untrusted_services_in
+
+  # Setup our trusted states.
   iif $trusted_interfaces ct state $trusted_states_in counter accept
   iif $untrusted_interfaces ct state $untrusted_states_in counter accept
 
@@ -24,5 +32,5 @@ chain input {
 
   # count and fall back to default policy (drop)
   jump counter-total-input-drop
-  counter queue num 0
+  counter queue num 20
 }
