@@ -7,7 +7,7 @@ define du_interfaces = { enp0s25 , wl01 }
 # States
 # Note: invalid is part of global block, hence not mentioned here.
 define du_states_in = { established , related }
-add element filter du_states_in { $du_interfaces . $du_states_in : counter accept }
+#add element filter du_states_in { $du_interfaces . $du_states_in : accept }
 
 define du_states_out = { established , new , related }
-add element filter du_states_out { $du_interfaces . $du_states_out : counter accept }
+#add element filter du_states_out { $du_interfaces . $du_states_out : accept }

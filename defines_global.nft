@@ -2,19 +2,20 @@
 
 # Interfaces
 #   As this is a global rule, we do not define any interfaces - and they are not in our dictionary maps.
+define dg_interfaces = { lo , enp0s25 , wlo1 }
 
 # - States
-define dg_state_block = { invalid }
-add element filter dg_states_in = { $dg_state_block : counter block }
-add element filter dg_states_out = { $dg_state_block : counter block }
+#define dg_state_block = { invalid }
+#add element filter dg_states_in = { $dg_state_block : block }
+#add element filter dg_states_out = { $dg_state_block : block }
 
 # States
 # Note: invalid is part of global block, hence not mentioned here.
-define dg_states_in = { established , new , related }
-add element filter dg_states_in { $dg_interfaces . $dg_states_in : counter accept }
+#define dg_states_in = { established , new , related }
+#add element filter dg_states_in { $dg_interfaces . $dg_states_in : accept }
 
-define dg_states_out = { established , new , related }
-add element filter dg_states_out { $dg_interfaces , $dg_states_out : counter accept }
+#define dg_states_out = { established , new , related }
+#add element filter dg_states_out { $dg_interfaces , $dg_states_out : accept }
 
 
 # - Services
@@ -22,24 +23,24 @@ add element filter dg_states_out { $dg_interfaces , $dg_states_out : counter acc
 
 # - - - HTTP
 define dg_service_tcp_http = { http , https , http-alt }
-add element filter dg_map_services_out { $dg_interfaces . tcp . $dg_service_tcp_http : counter accept }
+add element filter map_services_out { lo . tcp . $dg_service_tcp_http : accept }
 
 # - - - IRC
-define dg_service_tcp_irc = { 194 , 6697 }
-add element filter dg_map_services_in { $dg_interfaces . tcp . $dg_service_tcp_irc : counter drop }
-add element filter dg_map_services_out { $dg_interfaces . tcp . $dg_service_tcp_irc : counter drop }
+#define dg_service_tcp_irc = { 194 , 6697 }
+#add element filter map_services_in { $dg_interfaces . tcp . $dg_service_tcp_irc : drop }
+#add element filter map_services_out { $dg_interfaces . tcp . $dg_service_tcp_irc : drop }
 
-define dg_service_tcp_teamviewer = 5938
-add element filter dg_map_services_in { $dg_interfaces . tcp . $dg_service_tcp_teamviewer : counter drop }
-add element filter dg_map_services_out { $dg_interfaces . tcp . $dg_service_tcp_teamviewer : counter drop }
+#define dg_service_tcp_teamviewer = 5938
+#add element filter map_services_in { $dg_interfaces . tcp . $dg_service_tcp_teamviewer : drop }
+#add element filter map_services_out { $dg_interfaces . tcp . $dg_service_tcp_teamviewer : drop }
 
 # - - UDP
 
 # - - - Domain / Name Server related services
-define dg_service_udp_dns = domain
-add element filter dg_map_services_out { $dg_interfaces . udp . $dg_service_udp_dns : counter accept }
+#define dg_service_udp_dns = 53
+#add element filter map_services_out { $dg_interfaces . udp . $dg_service_udp_dns : accept }
 
 # - - - IRC
-define dg_service_udp_irc = { 194 , 6697 }
-add element filter dg_map_services_in { $dg_interfaces . udp . $dg_service_udp_irc : counter drop }
-add element filter dg_map_services_out { $dg_interfaces . udp . $dg_service_udp_irc : counter drop }
+#define dg_service_udp_irc = { 194 , 6697 }
+#add element filter map_services_in { $dg_interfaces . udp . $dg_service_udp_irc : drop }
+#add element filter map_services_out { $dg_interfaces . udp . $dg_service_udp_irc : drop }

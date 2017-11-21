@@ -1,9 +1,20 @@
-#!/usr/sbin/nft -f
+#!/usr/sbin/nft
 
 table ip filter {
-  include "/etc/nftables.d/configuration_nftables-firewall.nft/chains.nft"
   include "/etc/nftables.d/configuration_nftables-firewall.nft/defines.nft"
+  include "/etc/nftables.d/configuration_nftables-firewall.nft/chains.nft"
 
   #include "/etc/nftables.d/configuration_nftables-firewall.nft/table.ip.filter.input.nft"
   #include "/etc/nftables.d/configuration_nftables-firewall.nft/table.ip.filter.output.nft"
 }
+
+# Refers to the defines for 'trusted' networks.
+include "/etc/nftables.d/configuration_nftables-firewall.nft/defines_trusted.nft"
+
+# Refers to the defines for 'untrusted' networks.
+include "/etc/nftables.d/configuration_nftables-firewall.nft/defines_untrusted.nft"
+
+# Include our different trust scopes. (Global, Trusted, Un-Trusted)
+# This includes defines in trusted, and untrusted - therefore must be included after - no ty ocd.
+# Refers to the defines for 'global' networks (common rules)
+include "/etc/nftables.d/configuration_nftables-firewall.nft/defines_global.nft"

@@ -24,13 +24,13 @@ define dt_interfaces = { lo }
 #     PROTO = UDP
 #     DMAC = 01:00:5E:00:00:FB (33:33:00:00:00:FB IPv6)
 # Additionally: Should only be accepted on TRUSTED interfaces & networks.
-define dt_service_udp_mdns = mdns
-map map_services_in { $dt_interfaces . udp . $dt_service_udp_mdns : counter accept }
+#define dt_service_udp_mdns = { 5353 }
+#add element filter map_services_in { $dt_interfaces . $dt_service_udp_mdns : accept }
 
 # States
 # Note: invalid is part of global block, hence not mentioned here.
-define dt_states_in = { established , new , related }
-map_states_in { $dt_interfaces . $dt_states_in : counter accept }
+#define dt_states_in = { established , new , related }
+#map_states_in { $dt_interfaces . $dt_states_in : accept }
 
-define dt_states_out = { established , new , related }
-map_states_out { $dt_interfaces , $dt_states_out : counter accept }
+#define dt_states_out = { established , new , related }
+#map_states_out { $dt_interfaces , $dt_states_out : accept }
