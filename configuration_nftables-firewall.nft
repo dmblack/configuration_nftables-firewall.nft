@@ -4,6 +4,6 @@ table ip filter {
   include "/etc/nftables.d/configuration_nftables-firewall.nft/chains.nft"
   include "/etc/nftables.d/configuration_nftables-firewall.nft/defines.nft"
 
-  include "/etc/nftables.d/configuration_nftables-firewall.nft/table.ip.filter.input.nft"
-  include "/etc/nftables.d/configuration_nftables-firewall.nft/table.ip.filter.output.nft"
+  #include "/etc/nftables.d/configuration_nftables-firewall.nft/table.ip.filter.input.nft"
+  #include "/etc/nftables.d/configuration_nftables-firewall.nft/table.ip.filter.output.nft"
 }

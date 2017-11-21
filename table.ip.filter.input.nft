@@ -7,10 +7,10 @@ chain input {
   jump counter-total-input
 
   # Block our global_state_block (invalid)
-  ct state $global_state_block counter drop;
+  ct state $global_state_block counter queue num 1
 
   # Accept our trusted interfaces.
-  iif lo counter accept;
+  iif lo counter accept
 
   # Counters excluding loopback
   jump counter-total-exlo

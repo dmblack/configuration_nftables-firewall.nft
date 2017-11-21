@@ -1,4 +1,4 @@
-# Server
+# Interfaces
 define nic_inet_lan = enp0s25
 define nic_inet_vpn = ppp0
 define nic_inet_wireless = wlo1
@@ -6,23 +6,29 @@ define nic_inet_wireless = wlo1
 # Common
 define nic_inet_lo = lo
 
-# Lan Interface
-#define interface_lan = { $nic_inet_lo, $nic_inet_vpn }
-define interface_lan = $nic_inet_lo
-define interface_wan = { $nic_inet_lan, $nic_inet_wireless }
+# Networks
+#define network_lan = { $nic_inet_lo, $nic_inet_vpn }
+define network_lan = $nic_inet_lo
+define network_wan = { $nic_inet_lan, $nic_inet_wireless }
 
-define trusted_interfaces = { lo, $interface_lan }
-define trusted_states_in = { established , new , related }
-define trusted_states_out = { established , new , related }
+# Dictionaries
+map map_services_in { type iface_index . inet_proto . inet_service : verdict; }
+map map_services_out { type iface_index . inet_proto . inet_service : verdict; }
+#map map_states_in { type iface_index . ct_state : verdict; }
+#map map_states_out { type iface_index . ct_state : verdict; }
 
-define untrusted_interfaces = { $interface_wan }
-define untrusted_states_in = { established , related }
-define untrusted_states_out = { established , new , related }
+# As global applies to all interfaces, we intentionally do not include this in our map.
+#   At time of writing, 21'st November - This also doesn't need an in/out rule.
+map map_services_global { type iface_index . inet_proto . inet_service : verdict; }
+#map map_states_global { type ct_state: verdict; }
 
-define global_state_block = { invalid }
+# Refers to the defines for 'trusted' networks.
+include "/etc/nftables.d/configuration_nftables-firewall.nft/defines_trusted.nft"
 
-# Trusted States
-define state_untrusted_lan = { invalid , untracked }
-define state_untrusted_wan = { invalid , new , untracked }
-define state_trusted_lan = { established , new , related }
-define state_trusted_wan = { established , related }
+# Refers to the defines for 'untrusted' networks.
+#include "/etc/nftables.d/configuration_nftables-firewall.nft/defines_untrusted.nft"
+
+# Include our different trust scopes. (Global, Trusted, Un-Trusted)
+# This includes defines in trusted, and untrusted - therefore must be included after - no ty ocd.
+# Refers to the defines for 'global' networks (common rules)
+#include "/etc/nftables.d/configuration_nftables-firewall.nft/defines_global.nft"

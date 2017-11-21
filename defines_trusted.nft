@@ -1,0 +1,36 @@
+# Prefixed with dt_ to avoid collision with other defines.
+
+# Interfaces
+# Requires MANUAL Input
+# I include my VPN here, as it's a secure network. However;
+#   NFTables doesn't seem to support dynamic interfaces. So if this interface is not available,
+#     the script will throw an error. If the interface was available, but is no longer available,
+#     it will be refered to by it's 'interface' number (an allocated integer, and no longer ppp0).
+#   So.. for now.. I manually toggle between these two defines when I'm on VPN or not - but default to no ppp0
+define dt_interfaces = { lo }
+#define dt_interfaces = { lo, ppp0 }
+
+# Services
+# - TCP
+
+# NONE TO DATE
+
+# - UDP
+# Separated from the above domain item due to it's multicast status
+#   SEE: https://en.wikipedia.org/wiki/Multicast_DNS
+#   Should only be accepted only
+#     DPORT = 5353
+#     DADDR = 224.0.0.251 (FF02:FB IPv6)
+#     PROTO = UDP
+#     DMAC = 01:00:5E:00:00:FB (33:33:00:00:00:FB IPv6)
+# Additionally: Should only be accepted on TRUSTED interfaces & networks.
+define dt_service_udp_mdns = mdns
+map map_services_in { $dt_interfaces . udp . $dt_service_udp_mdns : counter accept }
+
+# States
+# Note: invalid is part of global block, hence not mentioned here.
+define dt_states_in = { established , new , related }
+map_states_in { $dt_interfaces . $dt_states_in : counter accept }
+
+define dt_states_out = { established , new , related }
+map_states_out { $dt_interfaces , $dt_states_out : counter accept }
