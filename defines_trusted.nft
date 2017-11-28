@@ -17,6 +17,17 @@ define dt_trusted_service_tcp_sspd = 1900
 add element filter trusted_services_tcp_in { $dt_trusted_service_tcp_sspd . tcp : accept }
 
 # - UDP
+
+# - - NTP
+define dt_trusted_service_udp_ntp = 123
+add element filter trusted_services_udp_out { $dt_trusted_service_udp_ntp . udp : accept }
+
+define dt_trusted_service_udp_nebios137 = 137
+add element filter trusted_services_udp_in { $dt_trusted_service_udp_nebios137 . udp : accept }
+
+define dt_trusted_service_udp_nebios138 = 138
+add element filter trusted_services_udp_in { $dt_trusted_service_udp_nebios138 . udp : accept }
+
 # Separated from the above domain item due to it's multicast status
 #   SEE: https://en.wikipedia.org/wiki/Multicast_DNS
 #   Should only be accepted only

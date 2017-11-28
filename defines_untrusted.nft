@@ -18,6 +18,12 @@ add element filter untrusted_services_tcp_in { $du_trusted_service_tcp_sspd . tc
 
 # - UDP
 
+define du_untrusted_service_udp_nebios137 = 137
+add element filter untrusted_services_udp_in { $du_untrusted_service_udp_nebios137 . udp : drop }
+
+define du_untrusted_service_udp_nebios138 = 138
+add element filter untrusted_services_udp_in { $du_untrusted_service_udp_nebios138 . udp : drop }
+
 define du_trusted_service_udp_sspd = 1900
 add element filter untrusted_services_udp_in { $du_trusted_service_udp_sspd . udp : drop }
 
@@ -31,3 +37,6 @@ add element filter untrusted_services_udp_in { $du_trusted_service_udp_sspd . ud
 # Additionally: Should only be accepted on TRUSTED interfaces & networks.
 define du_untrusted_service_udp_mdns = 5353
 add element filter untrusted_services_udp_in { $du_untrusted_service_udp_mdns . udp : drop }
+
+define du_untrusted_service_udp_dropbox = 17500
+add element filter untrusted_services_udp_in { $du_untrusted_service_udp_dropbox . udp : drop }

@@ -15,21 +15,29 @@ chain output {
   # Counters excluding loopback
   jump counter-total-exlo
 
-  # Setup our global services
+  # Setup our global interfaces (Services that apply globally)
   oif $global_interfaces tcp dport . ip protocol vmap @global_services_tcp_out
   oif $global_interfaces udp dport . ip protocol vmap @global_services_udp_out
+  oifname $trusted_interfaces_named tcp dport . ip protocol vmap @global_services_tcp_out
+  oifname $trusted_interfaces_named udp dport . ip protocol vmap @global_services_udp_out
 
-  # Setup our trusted services
+  # Setup our trusted interfaces (Services that apply to trusted only)
   oif $trusted_interfaces tcp dport . ip protocol vmap @trusted_services_tcp_out
   oif $trusted_interfaces udp dport . ip protocol vmap @trusted_services_udp_out
+  oifname $trusted_interfaces_named tcp dport . ip protocol vmap @trusted_services_tcp_out
+  oifname $trusted_interfaces_named udp dport . ip protocol vmap @trusted_services_udp_out
 
-  # Setup our untrusted services
+  # Setup our untrusted interfaces (Services that apply to untrusted only)
   oif $untrusted_interfaces tcp dport . ip protocol vmap @untrusted_services_tcp_out
   oif $untrusted_interfaces udp dport . ip protocol vmap @untrusted_services_udp_out
 
   # Setup our trusted states.
   oif $trusted_interfaces ct state $trusted_states_out counter accept
+  oifname $trusted_interfaces_named ct state $trusted_states_out counter accept
   oif $untrusted_interfaces ct state $untrusted_states_out counter accept
+
+  # Allow WAN PING, but limited to 2 per second
+  oif $global_interfaces ip protocol icmp icmp type echo-request limit rate 2/second counter accept
 
   # count and fall back to default policy (drop)
   jump counter-total-output-drop
