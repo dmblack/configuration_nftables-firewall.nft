@@ -16,7 +16,9 @@ chain counter-total-input {
 }
 
 chain counter-total-input-drop {
-  counter
+  # We drop incomming packets immediately, rather than reject - so they timeout and look like nothing
+  # is available on our side. This is best practice cyber security.
+  counter drop
 }
 
 chain counter-total-output {
@@ -25,5 +27,7 @@ chain counter-total-output {
 }
 
 chain counter-total-output-drop {
-  counter
+  # We reject outgoing connections with icmp admin-prohibited to avoid having to wait for timeouts.
+  # This means deliberately dropped outgoing connections fail immediately, rather than timeout.
+  counter reject with icmp type admin-prohibited
 }

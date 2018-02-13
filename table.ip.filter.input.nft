@@ -2,6 +2,9 @@ chain input {
   # Hook and default drop.
   type filter hook input priority 0; policy drop;
 
+  # Meta mark 666 is set by 'nodewall' - and should be dropped immediately (Userspace rejected.)
+  meta mark 666 counter jump counter-total-input-drop
+
   # count our traffic.
   jump counter-total
   jump counter-total-input
@@ -18,8 +21,8 @@ chain input {
   # Setup our global services
   iif $global_interfaces tcp dport . ip protocol vmap @global_services_tcp_in
   iif $global_interfaces udp dport . ip protocol vmap @global_services_udp_in
-  iifname $trusted_interfaces_named tcp dport . ip protocol vmap @global_services_tcp_in
-  iifname $trusted_interfaces_named udp dport . ip protocol vmap @global_services_udp_in
+  iifname $global_interfaces_named tcp dport . ip protocol vmap @global_services_tcp_in
+  iifname $global_interfaces_named udp dport . ip protocol vmap @global_services_udp_in
 
   # Setup our trusted services
   iif $trusted_interfaces tcp dport . ip protocol vmap @trusted_services_tcp_in
@@ -30,16 +33,23 @@ chain input {
   # Setup our untrusted services
   iif $untrusted_interfaces tcp dport . ip protocol vmap @untrusted_services_tcp_in
   iif $untrusted_interfaces udp dport . ip protocol vmap @untrusted_services_udp_in
+  iifname $untrusted_interfaces_named tcp dport . ip protocol vmap @untrusted_services_tcp_in
+  iifname $untrusted_interfaces_named udp dport . ip protocol vmap @untrusted_services_udp_in
 
   # Setup our trusted states.
   iif $trusted_interfaces ct state $trusted_states_in counter accept
   iifname $trusted_interfaces_named ct state $trusted_states_in counter accept
   iif $untrusted_interfaces ct state $untrusted_states_in counter accept
+  iifname $untrusted_interfaces_named ct state $untrusted_states_in counter accept
 
   # Allow WAN PING, but limited to 2 per second
   iif $global_interfaces ip protocol icmp icmp type echo-request limit rate 2/second counter accept
+  iifname $global_interfaces_named ip protocol icmp icmp type echo-request limit rate 2/second counter accept
+
+  # Queue packets to userspace, if an app is listening (nodewall).
+  # Nodewall will nf_mark packets 666, to match a rule earlier in this chain.
+  counter nftrace set 1 queue num 10
 
   # count and fall back to default policy (drop)
   jump counter-total-input-drop
-  counter queue num 20
 }

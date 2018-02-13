@@ -1,9 +1,5 @@
 # Prefixed with dg_ to avoid collision with other defines.
 
-# Interfaces
-#   As this is a global rule, we do not define any interfaces - and they are not in our dictionary maps.
-define dg_interfaces = { lo , enp0s25 , wlo1 }
-
 # - Services
 # - - TCP
 
@@ -18,14 +14,13 @@ define dg_service_tcp_irc = 194
 define dg_service_tcp_ircssl = 6697
 add element filter global_services_tcp_in { $dg_service_tcp_irc . tcp : drop }
 add element filter global_services_tcp_in { $dg_service_tcp_ircssl . tcp : drop }
-add element filter global_services_tcp_out { $dg_service_tcp_irc . tcp : drop }
-add element filter global_services_tcp_out { $dg_service_tcp_ircssl . tcp : drop }
+#add element filter global_services_tcp_out { $dg_service_tcp_irc . tcp : drop }
+#add element filter global_services_tcp_out { $dg_service_tcp_ircssl . tcp : drop }
 
+# - - - TeamViewer
 define dg_service_tcp_teamviewer = 5938
 add element filter global_services_tcp_in { $dg_service_tcp_teamviewer . tcp : drop }
-add element filter global_services_tcp_in { $dg_service_tcp_teamviewer . tcp : drop }
-add element filter global_services_tcp_out { $dg_service_tcp_teamviewer . tcp : drop }
-add element filter global_services_tcp_out { $dg_service_tcp_teamviewer . tcp : drop }
+#add element filter global_services_tcp_out { $dg_service_tcp_teamviewer . tcp : drop }
 
 # - - UDP
 
@@ -36,8 +31,8 @@ add element filter global_services_udp_out { $dg_service_udp_dns . udp : accept 
 # - - - IRC
 define dg_service_udp_irc = 194
 define dg_service_udp_ircssl = 6697
-add element filter global_services_udp_out { $dg_service_udp_irc . udp : drop }
-add element filter global_services_udp_out { $dg_service_udp_ircssl . udp : drop }
+#add element filter global_services_udp_out { $dg_service_udp_irc . udp : drop }
+#add element filter global_services_udp_out { $dg_service_udp_ircssl . udp : drop }
 
 # - - - VPN
 define dg_service_udp_vpn500 = 500

@@ -2,6 +2,9 @@ chain output {
   # Hook and default drop.
   type filter hook output priority 0; policy drop;
 
+  # Meta mark 666 is set by 'nodewall' - and should be dropped immediately (Userspace rejected.)
+  meta mark 666 counter jump counter-total-output-drop
+
   # count our traffic.
   jump counter-total
   jump counter-total-output
@@ -18,8 +21,8 @@ chain output {
   # Setup our global interfaces (Services that apply globally)
   oif $global_interfaces tcp dport . ip protocol vmap @global_services_tcp_out
   oif $global_interfaces udp dport . ip protocol vmap @global_services_udp_out
-  oifname $trusted_interfaces_named tcp dport . ip protocol vmap @global_services_tcp_out
-  oifname $trusted_interfaces_named udp dport . ip protocol vmap @global_services_udp_out
+  oifname $global_interfaces_named tcp dport . ip protocol vmap @global_services_tcp_out
+  oifname $global_interfaces_named udp dport . ip protocol vmap @global_services_udp_out
 
   # Setup our trusted interfaces (Services that apply to trusted only)
   oif $trusted_interfaces tcp dport . ip protocol vmap @trusted_services_tcp_out
@@ -30,16 +33,23 @@ chain output {
   # Setup our untrusted interfaces (Services that apply to untrusted only)
   oif $untrusted_interfaces tcp dport . ip protocol vmap @untrusted_services_tcp_out
   oif $untrusted_interfaces udp dport . ip protocol vmap @untrusted_services_udp_out
+  oifname $untrusted_interfaces_named tcp dport . ip protocol vmap @untrusted_services_tcp_out
+  oifname $untrusted_interfaces_named udp dport . ip protocol vmap @untrusted_services_udp_out
 
   # Setup our trusted states.
   oif $trusted_interfaces ct state $trusted_states_out counter accept
   oifname $trusted_interfaces_named ct state $trusted_states_out counter accept
   oif $untrusted_interfaces ct state $untrusted_states_out counter accept
+  oifname $untrusted_interfaces_named ct state $untrusted_states_out counter accept
 
   # Allow WAN PING, but limited to 2 per second
   oif $global_interfaces ip protocol icmp icmp type echo-request limit rate 2/second counter accept
+  oifname $global_interfaces_named ip protocol icmp icmp type echo-request limit rate 2/second counter accept
+
+  # Queue packets to userspace, if an app is listening (nodewall).
+  # Nodewall will nf_mark packets 666, to match a rule earlier in this chain.
+  counter nftrace set 1 queue num 20
 
   # count and fall back to default policy (drop)
   jump counter-total-output-drop
-  counter queue num 10
 }
